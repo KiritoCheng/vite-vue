@@ -1,34 +1,33 @@
 <template>
-  <div class="header">
-    <div class="left">ERP 管理系统</div>
-
-    <div class="right">
-      <el-dropdown>
-        <span class="user">Admin</span>
-        <template #dropdown>
-          <el-dropdown-menu>
-            <el-dropdown-item>个人中心</el-dropdown-item>
-            <el-dropdown-item divided>退出登录</el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
-    </div>
-  </div>
+  <el-tabs
+    v-model="tabsStore.active"
+    type="card"
+    @tab-click="handleClick"
+    @tab-remove="handleRemove"
+  >
+    <el-tab-pane
+      v-for="item in tabsStore.tabs"
+      :key="item.path"
+      :label="item.title"
+      :name="item.path"
+      :closable="item.closable"
+    />
+  </el-tabs>
 </template>
 
-<style scoped>
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 100%;
-}
+<script setup>
+import { useRouter } from "vue-router";
+import { useTabsStore } from "@/store/tabs";
 
-.left {
-  font-weight: bold;
-}
+const router = useRouter();
+const tabsStore = useTabsStore();
 
-.user {
-  cursor: pointer;
-}
-</style>
+const handleClick = (tab) => {
+  router.push(tab.props.name);
+};
+
+const handleRemove = (path) => {
+  tabsStore.removeTab(path);
+  router.push(tabsStore.active);
+};
+</script>
